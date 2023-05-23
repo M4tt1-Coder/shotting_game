@@ -4,12 +4,13 @@ struct Player{
     x: u8,
     y: u8,
     kills: u32,
-    bullets: Vec<Bullet>
+    bullets: Vec<Bullet>,
+    health: u8,
 }
 
 impl Player{
-    pub fn new(x: u8, y: u8, kills: u32) -> Player{
-        Player{x: x, y: y, kills: kills, bullets: Vec::new()}
+    pub fn new(x: u8, y: u8, kills: u32, health: u8) -> Player{
+        Player{x: x, y: y, kills: kills, bullets: Vec::new(), health: health}
     }
 
     
@@ -60,16 +61,21 @@ impl Enemy{
 //constants
 const HEIGHT: u8 = 30;
 const WIDTH: u8 = 80;
-const BulletSpeed: u8 = 2;
-const P_Start_Pos: (u8, u8) = (3, 15);//
+const BULLET_SPEED: u8 = 2;
+const P_START_POS: (u8, u8) = (3, 15);//
 
 //Starts the game 
-pub fn Start(){
-    let player = Player::new(x, y, kills);
+pub fn start(){
+    //the default player instance 
+    let mut player = Player::new(P_START_POS.0, P_START_POS.1,
+    0, 3 );
+
+    render(&mut player);
 }
 
-fn render(){
-
+fn render(player: *mut Player){
+    
 }
 
 
+ 

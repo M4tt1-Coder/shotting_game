@@ -1,5 +1,5 @@
-use shotting_game::Start;
+use shotting_game::start;
 
 fn main(){
-    Start();
+    start();
 }
