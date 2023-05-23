@@ -24,12 +24,13 @@ struct Bullet{
     y: u8,
     speed: u8, //2 makes the bullet move 2 fields, 3 => 3 fields
     killed: bool,
+    on_field: bool
 }
 
 impl Bullet{
     pub fn new(x: u8, y: u8, speed: u8) -> Bullet{
         Bullet {
-            x: x, y: y, speed: speed, killed: false 
+            x: x, y: y, speed: speed, killed: false, on_field: true 
         }
     }
 
@@ -43,12 +44,13 @@ struct Enemy{
     y: u8,
     speed: u8,
     hit: bool,
+    on_field: bool//changes to false when reaches player area or was hit by a bullet
 }
 
 impl Enemy{
     pub fn new(x: u8, y: u8, speed: u8) -> Enemy{
         Enemy{
-            x: x, y: y, speed: speed, hit: false
+            x: x, y: y, speed: speed, hit: false, on_field: true
         }
     }
 
