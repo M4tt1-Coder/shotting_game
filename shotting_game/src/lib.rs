@@ -1,3 +1,6 @@
+use std::sync::{Arc, Mutex};
+
+
 //structs
 
 struct Player{
@@ -34,8 +37,8 @@ impl Bullet{
         }
     }
 
-    pub fn MoveBullet(b: *mut Self){
-
+    pub fn MoveBullet(mut self){
+        self.x += self.speed;
     }
 }
 
@@ -54,8 +57,8 @@ impl Enemy{
         }
     }
 
-    fn MoveEnemy(e: *mut Self){
-
+    fn MoveEnemy(mut self){
+       self.x -=  self.speed;
     }
     
 }
@@ -66,18 +69,50 @@ const WIDTH: u8 = 80;
 const BULLET_SPEED: u8 = 2;
 const P_START_POS: (u8, u8) = (3, 15);//
 
+
 //Starts the game 
 pub fn start(){
+    //stops when the player is dead
+    render();
+}
+
+fn render(){
     //the default player instance 
     let mut player = Player::new(P_START_POS.0, P_START_POS.1,
-    0, 3 );
+        0, 3 );
+    
 
-    render(&mut player);
-}
+    let mut enemies: Vec<Enemy> = vec![];
+    
+    //infinite loop: stops when the  
+    loop{
+        //here the for-loops for the displaying 
+        for y in 0..HEIGHT{
+            for x in 0..WIDTH{
 
-fn render(player: *mut Player){
+            }
+            println!();
+        }
+
+        //add a enemy
+
+        //move the enemies and bullets 
+        if enemies.len() != 0{
+            for e in  enemies{
+                e.MoveEnemy();
+            }
+        }
+        
+        if player.bullets.len() != 0{
+            for b in player.bullets{
+                b.MoveBullet();
+            }
+        }
+    }
     
 }
+ 
+fn Add_Enemy_To_List(){
 
-
+}
  
