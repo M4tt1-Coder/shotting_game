@@ -1,4 +1,5 @@
-use std::sync::{Arc, Mutex};
+use core::time;
+use std::{sync::{Arc, Mutex}, thread};
 
 
 //structs
@@ -37,9 +38,7 @@ impl Bullet{
         }
     }
 
-    pub fn MoveBullet(mut self){
-        self.x += self.speed;
-    }
+    
 }
 
 struct Enemy{
@@ -57,9 +56,6 @@ impl Enemy{
         }
     }
 
-    fn MoveEnemy(mut self){
-       self.x -=  self.speed;
-    }
     
 }
 
@@ -84,34 +80,84 @@ fn render(){
 
     let mut enemies: Vec<Enemy> = vec![];
     
+    let delay = time::Duration::from_millis(50);
+
     //infinite loop: stops when the  
     loop{
-        //here the for-loops for the displaying 
-        for y in 0..HEIGHT{
-            for x in 0..WIDTH{
-
-            }
-            println!();
-        }
-
+        display(&enemies, &player);    
         //add a enemy
 
+
+        //work with threads: one for displaying, one for adding enemies
+
         //move the enemies and bullets 
-        if enemies.len() != 0{
-            for e in  enemies{
-                e.MoveEnemy();
-            }
-        }
-        
-        if player.bullets.len() != 0{
-            for b in player.bullets{
-                b.MoveBullet();
-            }
-        }
+        MoveBullet(&mut player.bullets);       
+        MoveEnemies(&mut enemies);
+
+        thread::sleep(delay);
     }
     
 }
  
+fn display(enemies: &Vec<Enemy>, player: &Player){
+    //here the for-loops for the displaying 
+    for y in 0..HEIGHT{
+        for x in 0..WIDTH{
+            
+            //says if a enemy or bullet has been displayed
+            let mut con_loop = false;
+
+            //displays bullet
+            for b in &player.bullets{
+                if y == b.y && x == b.x{
+                    print!("➼");
+                    con_loop = true;
+                }
+            }
+
+            //displays enemy
+            for e in enemies{
+                if y == e.y && x == e.x{
+                    print!("☢");
+                    con_loop = true;
+                }
+            }
+
+            if con_loop {
+                continue;
+            }
+
+            if y == 0 || y == HEIGHT - 1 || x == 0 || x == WIDTH - 1 || x == 5{
+                print!("⍂");
+            }else if y == player.y && x == player.x{
+                print!("♞");
+            }else{
+                print!(" ");
+            }
+        }
+        println!();
+    }
+
+}
+
+fn MoveEnemies(enemies: &mut Vec<Enemy>){
+    if enemies.len() > 0{
+        for e in enemies{
+            e.x -= 1;
+
+        }
+    }
+    
+}
+
+fn MoveBullet(bullets: &mut Vec<Bullet>){
+    if bullets.len() > 0{
+        for b in bullets{
+            b.x += 1;
+        }
+    }
+}
+
 fn Add_Enemy_To_List(){
 
 }
