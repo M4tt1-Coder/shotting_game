@@ -1,6 +1,13 @@
 use core::time;
 use std::{sync::{Arc, Mutex}, thread};
+use rand::Rng;
+use std::io::{stdin, stdout, Write};
+use termion::event::Key;
+use termion::input::TermRead;
+use termion::raw::IntoRawMode;
+use termion::raw::RawTerminal;
 
+//use thread::
 
 //structs
 
@@ -61,10 +68,9 @@ impl Enemy{
 
 //constants
 const HEIGHT: u8 = 30;
-const WIDTH: u8 = 80;
+const WIDTH: u8 = 150;
 const BULLET_SPEED: u8 = 2;
 const P_START_POS: (u8, u8) = (3, 15);//
-
 
 //Starts the game 
 pub fn start(){
@@ -86,13 +92,17 @@ fn render(){
     loop{
         display(&enemies, &player);    
         //add a enemy
-
-
+        Spawn_Enemy(2);
         //work with threads: one for displaying, one for adding enemies
+
+        //move player with key press events
+        move_player(&get_pressed_key(), &mut player);
 
         //move the enemies and bullets 
         MoveBullet(&mut player.bullets);       
         MoveEnemies(&mut enemies);
+
+
 
         thread::sleep(delay);
     }
@@ -140,10 +150,32 @@ fn display(enemies: &Vec<Enemy>, player: &Player){
 
 }
 
+fn get_pressed_key() -> String{
+    let stdin = stdin();
+
+    let mut stdout = stdout().into_raw_mode().unwrap();//maybe handle error in better way
+    stdout.flush().unwrap();
+
+    let mut command = String::new();
+
+    for k in stdin.keys(){
+        command = match k.unwrap(){
+            Key::Char('w') => String::from("Up"),
+            Key::Char('s') => String::from("Down"),
+            Key::Char('a') => String::from("Left"),
+            Key::Char('d') => String::from("Right"),
+            Key::Char('e') => String::from("Shot"),
+            _ => String::new()
+        };
+    }
+
+    command
+}
+
 fn MoveEnemies(enemies: &mut Vec<Enemy>){
     if enemies.len() > 0{
         for e in enemies{
-            e.x -= 1;
+            e.x -= e.speed;
 
         }
     }
@@ -153,12 +185,43 @@ fn MoveEnemies(enemies: &mut Vec<Enemy>){
 fn MoveBullet(bullets: &mut Vec<Bullet>){
     if bullets.len() > 0{
         for b in bullets{
-            b.x += 1;
+            b.x += b.speed;
         }
     }
 }
 
-fn Add_Enemy_To_List(){
+fn Spawn_Enemy(speed: u8) -> Enemy{
+    let mut enemy = Enemy::new(WIDTH - 1, rand::thread_rng().gen_range(0..HEIGHT),
+        speed);
 
+    enemy
 }
  
+fn spawn_bullet(x: u8, y: u8) -> Bullet{
+    let bullet = Bullet::new(x, y, 2);
+
+    bullet
+}
+
+fn bullet_hit_enemy(bullets: &mut Vec<Bullet>, enemies: &mut Vec<Enemy>){
+    for e in enemies{
+        for b in &mut *bullets{
+            if b.x == e.x && b.y == e.y{
+                e.on_field = false;
+                b.killed = true;
+                b.on_field = false;
+            }            
+        }
+    }
+}
+
+fn move_player(key: &str, player: &mut Player) {
+    match key{
+        "Up" => player.y -= 1,
+        "Down" => player.y += 1,
+        "Left" => player.x -= 1,
+        "Right" => player.x += 1,
+        "Shot" => player.bullets.push(Bullet::new(player.x, player.y,2)),
+        _ => ()
+    }
+}
