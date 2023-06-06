@@ -8,7 +8,7 @@
             "type": "lldb",
             "request": "launch",
             "name": "Debug",
-            "program": "C:/Users/geima/Programmieren/Rust_Language/projects/shotting_game/shotting_game",
+            "program": "${workspaceFolder}/<executable file>",
             "args": [],
             "cwd": "${workspaceFolder}"
         }
