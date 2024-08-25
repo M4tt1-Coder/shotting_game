@@ -1,1 +1,0 @@
-/mnt/c/Users/geima/Programmieren/Rust_Language/projects/shotting_game/shotting_game/target/debug/libshotting_game.rlib: /mnt/c/Users/geima/Programmieren/Rust_Language/projects/shotting_game/shotting_game/src/lib.rs
